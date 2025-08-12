@@ -4,10 +4,10 @@
   "compatibilityLevel": "JAVA_17",
   "refmap": "perfect_dodge.refmap.json",
   "mixins": [
-
+    "UtilMixin"
   ],
   "client": [
-
+    "TimerMixin"
   ],
   "minVersion": "0.8"
 }
