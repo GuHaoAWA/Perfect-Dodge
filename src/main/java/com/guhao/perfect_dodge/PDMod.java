@@ -3,10 +3,13 @@ package com.guhao.perfect_dodge;
 
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.util.thread.SidedThreadGroups;
@@ -16,7 +19,9 @@ import net.minecraftforge.network.simple.SimpleChannel;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import yesman.epicfight.world.capabilities.EpicFightCapabilities;
+import yesman.epicfight.world.capabilities.entitypatch.LivingEntityPatch;
 import yesman.epicfight.world.capabilities.entitypatch.player.PlayerPatch;
+import yesman.epicfight.world.entity.eventlistener.PlayerEventListener;
 
 
 import java.util.*;
@@ -29,6 +34,7 @@ import java.util.function.Supplier;
 public class PDMod {
     public static final Logger LOGGER = LogManager.getLogger(PDMod.class);
     public static final String MODID = "perfect_dodge";
+    private static final UUID EVENT_UUID = UUID.fromString("36a396ea-0461-11ee-be56-0292ac114514");
     public static ResourceLocation path(String path) {
         return new ResourceLocation(MODID, path);
     }
@@ -71,7 +77,13 @@ public class PDMod {
     }
     @SubscribeEvent
     public static void onPlayerTick(TickEvent.PlayerTickEvent event) {
-        PlayerPatch<?> pp = EpicFightCapabilities.getEntityPatch(event.player, PlayerPatch.class);
-
+        if (event.side != LogicalSide.SERVER) return;
+        if (event.phase == TickEvent.Phase.START) {
+            PlayerPatch<?> pp = EpicFightCapabilities.getEntityPatch(event.player, PlayerPatch.class);
+            pp.getEventListener().addEventListener(PlayerEventListener.EventType.DODGE_SUCCESS_EVENT, EVENT_UUID, (e) -> {
+                Entity livingEntity = e.getDamageSource().getDirectEntity();
+                EpicFightCapabilities.getEntityPatch(livingEntity, LivingEntityPatch.class);
+            });
+        }
     }
 }
