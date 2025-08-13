@@ -2,10 +2,8 @@ package com.guhao.perfect_dodge.efm;
 
 import com.guhao.perfect_dodge.PDMod;
 import com.guhao.perfect_dodge.camera.CameraAnimation;
-import com.guhao.perfect_dodge.camera.CameraEvents;
 import com.guhao.perfect_dodge.camera.OjangUtils;
 import com.guhao.perfect_dodge.tick.TickChange;
-import net.minecraft.client.Minecraft;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -31,15 +29,15 @@ public class PDAnimations {
 //                .addEvents(AnimationProperty.StaticAnimationProperty.ON_BEGIN_EVENTS, AnimationEvent.SimpleEvent.create((entitypatch, animation, params) -> CameraEvents.SetAnim(NB, Minecraft.getInstance().player, true), AnimationEvent.Side.CLIENT))
 
                 .addEvents(AnimationEvent.InTimeEvent.create(0.333F, ((livingEntityPatch, assetAccessor, animationParameters) -> {
-                    TickChange.changeAll(3.0f);
-                }), AnimationEvent.Side.SERVER),
+                    TickChange.requestChange(3.0f);
+                }), AnimationEvent.Side.CLIENT),
                         AnimationEvent.InTimeEvent.create(0.167F, ((livingEntityPatch, assetAccessor, animationParameters) -> {
-                            livingEntityPatch.getOriginal().addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN,37,254,false,false,false));
+                            livingEntityPatch.getOriginal().addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN,12,254,false,false,false));
                         }), AnimationEvent.Side.SERVER),
 
                         AnimationEvent.InTimeEvent.create(0.7167F, ((livingEntityPatch, assetAccessor, animationParameters) -> {
-                            TickChange.changeAll(20.0f);
-                        }), AnimationEvent.Side.SERVER))
+                            TickChange.requestChange(20.0f);
+                        }), AnimationEvent.Side.CLIENT))
                 .addProperty(AnimationProperty.StaticAnimationProperty.PLAY_SPEED_MODIFIER, ((dynamicAnimation, livingEntityPatch, v, v1, v2) -> 1.15F)));
     }
 

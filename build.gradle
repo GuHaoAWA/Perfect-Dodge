@@ -86,10 +86,13 @@ minecraft {
                 }
             }
         }
-
         client {
             // Comma-separated list of namespaces to load gametests from. Empty = all namespaces.
             property 'forge.enabledGameTestNamespaces', mod_id
+            property 'forge.logging.markers', 'SCAN'
+            property 'forge.logging.console.level', 'debug'
+            property 'username', UUID.randomUUID().toString().substring(0, 8)
+
         }
 
         server {
@@ -138,6 +141,9 @@ dependencies {
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
 //    implementation fg.deobf("libs:epicfight-forge-20.12.2-1.20.1:1.0")
     implementation fg.deobf("libs:epicfight-20.12.2:1.0")
+//    implementation fg.deobf("libs:curios-forge-5.11.1+1.20.1:1.0")
+//    implementation fg.deobf("libs:L_Enders_Cataclysm-3.06:1.0")
+//    implementation fg.deobf("libs:lionfishapi-2.4:1.0")
 //    implementation fg.deobf("libs:TickChanger-1.20-1.0:1.0")
 //    implementation fg.deobf("libs:epicacg-20.11.8.0.fix2-all:1.0")
     // Example mod dependency with JEI - using fg.deobf() ensures the dependency is remapped to your development mappings

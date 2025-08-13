@@ -25,7 +25,28 @@ public class TickChange {
         create();
     }
 
+    // 只在客户端调用，发送请求到服务器
+    public static void requestChange(float percent) {
+        if (Minecraft.getInstance().isLocalServer()) {
+            // 单机模式直接修改
+            PERCENT = percent;
+        } else {
+            // 多人模式发送请求到服务器
+            PDMod.PACKET_HANDLER.sendToServer(new TickChangePacket(percent));
+        }
+    }
 
+    // 只在服务器调用，修改 tick rate 并广播
+    public static void applyChangeFromServer(float percent) {
+        PERCENT = percent;
+        // 广播给所有客户端（包括发送请求的玩家）
+        PDMod.PACKET_HANDLER.send(PacketDistributor.ALL.noArg(), new TickChangePacket(percent));
+    }
+
+    // 只在客户端调用，接收服务器的同步
+    public static void updateFromServer(float percent) {
+        PERCENT = percent;
+    }
 
     public static void create() {
         if (service == null) {
@@ -62,10 +83,6 @@ public class TickChange {
         }
     }
 
-    // 客户端调用此方法会发送请求到服务器
-    public static void requestChange(float percent) {
-        PDMod.PACKET_HANDLER.sendToServer(new TickChangePacket(percent));
-    }
 
     public static void jump(int ticks) {
         millisF += (double)((long)ticks * 50L);
